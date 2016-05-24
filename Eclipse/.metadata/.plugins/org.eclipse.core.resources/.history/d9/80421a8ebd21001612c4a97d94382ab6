@@ -73,7 +73,7 @@ class RequestHandler extends Thread {
 	        System.out.println("----------------------------");
 	        	for (int index = 0; index < nodeList.getLength(); index++) {
 		            Node nEmenta = nodeList.item(index);
-		            System.out.println("############################################");
+		            System.out.println("\nCurrent Element :"+nEmenta.getNodeName());
 		            if (nEmenta.getNodeType() == Node.ELEMENT_NODE) {
 		               Element  e_Ementa = (Element) nEmenta;
 		               NodeList nl_Serve = e_Ementa.getChildNodes();
@@ -109,7 +109,6 @@ class RequestHandler extends Thread {
 				            	   }
 		            		   }
 		            		   System.out.println("Preço: "+e_Serve.getAttribute("preço"));
-		            		   System.out.println("----------");
 		            	   }
 	            	   }
 		            }

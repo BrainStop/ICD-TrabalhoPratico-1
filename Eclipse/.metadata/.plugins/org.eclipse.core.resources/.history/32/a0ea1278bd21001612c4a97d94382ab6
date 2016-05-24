@@ -73,7 +73,7 @@ class RequestHandler extends Thread {
 	        System.out.println("----------------------------");
 	        	for (int index = 0; index < nodeList.getLength(); index++) {
 		            Node nEmenta = nodeList.item(index);
-		            System.out.println("############################################");
+		            System.out.println("\nCurrent Element :"+nEmenta.getNodeName());
 		            if (nEmenta.getNodeType() == Node.ELEMENT_NODE) {
 		               Element  e_Ementa = (Element) nEmenta;
 		               NodeList nl_Serve = e_Ementa.getChildNodes();
@@ -81,13 +81,14 @@ class RequestHandler extends Thread {
 		            	   Node n_Serve = nl_Serve.item(index2);
 		            	   if (n_Serve.getNodeType() == Node.ELEMENT_NODE) {
 		            		   Element e_Serve = (Element) n_Serve;
+		            		   System.out.println("Preço: "+e_Serve.getAttribute("preço"));
 		            		   NodeList nl_Item = doc.getElementsByTagName("item");
 		            		   for (int index3=0; index3 < nl_Item.getLength(); index3++) {
 				            	   Node n_Item = nl_Item.item(index3);
 				            	   if (n_Item.getNodeType() == Node.ELEMENT_NODE) {
 				            		   Element e_Item = (Element) n_Item;
 				            		   if (e_Item.getAttribute("iditem").equals(e_Serve.getAttribute("iditem"))) {
-				            			   	System.out.println("Prato: "+e_Item.getElementsByTagName("pt-pt").item(0).getTextContent());
+				            			   	System.out.println(e_Item.getElementsByTagName("pt-pt").item(0).getTextContent());
 				            			   	NodeList nl_IngrRef = e_Item.getElementsByTagName("ingrediente");
 				            			   	for(int index4=0; index4 < nl_IngrRef.getLength(); index4++){
 				            			   		Node n_IngrRef = nl_IngrRef.item(index4);
@@ -99,7 +100,7 @@ class RequestHandler extends Thread {
 				            			   				if(n_IngrID.getNodeType() == Node.ELEMENT_NODE) {
 				            			   					Element e_IngrID = (Element) n_IngrID;
 				            			   					if(e_IngrID.getAttribute("idingrediente").equals(e_IngrRef.getAttribute("idingrediente"))) {
-				            			   						System.out.println("Ingredientes: "+e_IngrID.getElementsByTagName("pt-pt").item(0).getTextContent());
+				            			   						System.out.println(e_IngrID.getElementsByTagName("pt-pt").item(0).getTextContent());
 				            			   					}
 				            			   				}
 				            			   			}
@@ -108,8 +109,6 @@ class RequestHandler extends Thread {
 				            		   }
 				            	   }
 		            		   }
-		            		   System.out.println("Preço: "+e_Serve.getAttribute("preço"));
-		            		   System.out.println("----------");
 		            	   }
 	            	   }
 		            }

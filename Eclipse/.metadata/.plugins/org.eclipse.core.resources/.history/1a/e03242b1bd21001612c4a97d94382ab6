@@ -109,7 +109,6 @@ class RequestHandler extends Thread {
 				            	   }
 		            		   }
 		            		   System.out.println("Preço: "+e_Serve.getAttribute("preço"));
-		            		   System.out.println("----------");
 		            	   }
 	            	   }
 		            }
