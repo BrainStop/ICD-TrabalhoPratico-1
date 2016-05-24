@@ -1,0 +1,106 @@
+package tp_01.server;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.PrintWriter;
+import java.net.Socket;
+import java.net.URL;
+
+import org.w3c.dom.*;
+import org.xml.sax.SAXException;
+
+import javax.xml.parsers.*;
+import java.io.*;
+class RequestHandler extends Thread {
+
+    private Socket connection;
+  
+    public RequestHandler(Socket connection) {
+        this.connection = connection;
+    }
+
+
+    public void run() {
+
+        BufferedReader is = null;
+        PrintWriter os    = null;
+
+        try {
+            // circuito virtual estabelecido: socket cliente na variavel newSock
+            System.out.println("Thread " + this.getId() + ": " + connection.getRemoteSocketAddress());
+
+            is = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+
+            os = new PrintWriter(connection.getOutputStream(), true);
+
+            String inputLine = is.readLine(); 
+            
+            getMenu();
+
+            System.out.println("Recebi -> " + inputLine);
+
+            os.println("@" + inputLine.toUpperCase());
+        }
+        catch (IOException e) {
+            System.err.println("erro na ligaçao " + connection + ": " + e.getMessage());
+        }
+        finally {
+            // garantir que o socket é fechado
+            try {
+                if (is != null) is.close();  
+                if (os != null) os.close();
+                if (connection != null) connection.close();                    
+            } catch (IOException e) { }
+        }
+    } // end run
+    
+    public String getMenu() {
+    	
+    	try {
+	    	
+	    	//Get XML dataBase
+	    	File xmlFile = new File("D:/LEIM/4º Semestre/ICD/Eclipse/trabalho pratico 1/bin/tp_01/database/restaurante.xml");
+	    	//Create document builder
+	    	//TODO Validate xsd
+	        DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
+			DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
+			Document doc = dBuilder.parse(xmlFile);
+		    doc.getDocumentElement().normalize();		
+	        System.out.println("Root element :"+doc.getDocumentElement().getNodeName());
+	        NodeList nodeList = doc.getElementsByTagName("ementa");
+	        System.out.println("----------------------------");
+	        	for (int temp = 0; temp < nodeList.getLength(); temp++) {
+		            Node nEmenta = nodeList.item(temp);
+		            System.out.println("\nCurrent Element :"+nEmenta.getNodeName());
+		            if (nEmenta.getNodeType() == Node.ELEMENT_NODE) {
+		               Element eEmenta = (Element) nEmenta;
+		               NodeList nListServe = eEmenta.getChildNodes();
+		               for (int i = 0; i < nListServe.getLength(); i++) {
+		            	   System.out.println(nodeList.item(i).getNodeValue());
+		            	   System.out.println(nodeList.item(i).getNodeType());
+		            	   Node nServe = nodeList.item(i);
+		            	   if (nServe.getNodeType() == Node.ELEMENT_NODE) {
+		            		   Element eServe = (Element) nServe;
+		            		   System.out.println("Preço: "+eServe.getAttribute("preço"));
+		            		   System.out.println("iditem: "+eServe.getAttribute("iditem"));
+		            	   }
+	            	   }
+		            }
+	        	}
+					
+		} catch (ParserConfigurationException e) {
+			e.printStackTrace();
+		} catch (SAXException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+    	
+    	
+    	return null;
+    }
+    
+    
+
+} // end HandleConnectionThread
