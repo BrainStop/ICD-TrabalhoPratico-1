@@ -1,0 +1,140 @@
+package tp_01.server;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.PrintWriter;
+import java.net.Socket;
+import java.net.URL;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
+import org.w3c.dom.*;
+import org.xml.sax.SAXException;
+
+import javax.xml.parsers.*;
+import java.io.*;
+class RequestHandler extends Thread {
+
+    private Socket connection;
+    BufferedReader is = null;
+    PrintWriter os    = null;
+
+  
+    public RequestHandler(Socket connection) {
+        this.connection = connection;
+    }
+
+
+    public void run() {
+
+
+        try {
+            // circuito virtual estabelecido: socket cliente na variavel newSock
+            System.out.println("Thread " + this.getId() + ": " + connection.getRemoteSocketAddress());
+
+            is = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+
+            os = new PrintWriter(connection.getOutputStream(), true);
+
+            String inputLine = is.readLine(); 
+                        
+            
+
+            System.out.println("Recebi -> " + inputLine);
+
+            os.println(getMenu("pt-pt"));
+        }
+        catch (IOException e) {
+            System.err.println("erro na ligaçao " + connection + ": " + e.getMessage());
+        }
+        finally {
+            // garantir que o socket é fechado
+            try {
+                if (is != null) is.close();  
+                if (os != null) os.close();
+                if (connection != null) connection.close();                    
+            } catch (IOException e) { }
+        }
+    } // end run
+    
+    public String getMenu(String ling) {
+    	if(!ling.equals("pt-pt") && !ling.equals("en-uk") && !ling.equals("fr-fr")) {
+    		return "Error 'ling' variable invalid value: "+ling;
+    	}
+    	
+    	DateFormat dateFormat = new SimpleDateFormat("MM/dd");
+    	Date date = new Date();
+    	System.out.println(dateFormat.format(date));
+    	String result = "";
+    	try {
+    		String newLine = System.getProperty("line.separator");
+	    	//Get XML dataBase
+    		//TODO Make relative path
+	    	File xmlFile = new File("D:/LEIM/4º Semestre/ICD/Eclipse/trabalho pratico 1/bin/tp_01/database/restaurante.xml");
+	    	//Create document builder
+	    	//TODO Validate xsd
+	        DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
+			DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
+			Document doc = dBuilder.parse(xmlFile);
+		    doc.getDocumentElement().normalize();
+	        NodeList nodeList = doc.getElementsByTagName("ementa");
+	        	for (int index = 0; index < nodeList.getLength(); index++) {
+		            Node nEmenta = nodeList.item(index);
+		            result += "############################################";
+		            if (nEmenta.getNodeType() == Node.ELEMENT_NODE) {
+		               Element  e_Ementa = (Element) nEmenta;
+		               NodeList nl_Serve = e_Ementa.getChildNodes();
+		               for (int index2=0; index2 < nl_Serve.getLength(); index2++) {
+		            	   Node n_Serve = nl_Serve.item(index2);
+		            	   if (n_Serve.getNodeType() == Node.ELEMENT_NODE) {
+		            		   Element e_Serve = (Element) n_Serve;
+		            		   NodeList nl_Item = doc.getElementsByTagName("item");
+		            		   for (int index3=0; index3 < nl_Item.getLength(); index3++) {
+				            	   Node n_Item = nl_Item.item(index3);
+				            	   if (n_Item.getNodeType() == Node.ELEMENT_NODE) {
+				            		   Element e_Item = (Element) n_Item;
+				            		   if (e_Item.getAttribute("iditem").equals(e_Serve.getAttribute("iditem"))) {
+				            			   result += "Prato: "+e_Item.getElementsByTagName(ling).item(0).getTextContent();
+				            			   	NodeList nl_IngrRef = e_Item.getElementsByTagName("ingrediente");
+				            			   	for(int index4=0; index4 < nl_IngrRef.getLength(); index4++){
+				            			   		Node n_IngrRef = nl_IngrRef.item(index4);
+				            			   		if(n_IngrRef.getNodeType() == Node.ELEMENT_NODE){
+				            			   			Element e_IngrRef = (Element) n_IngrRef;
+				            			   			NodeList nl_IngrID = doc.getElementsByTagName("ingredientes").item(0).getChildNodes();
+				            			   			for(int index5=0; index5 < nl_IngrID.getLength(); index5++) {
+				            			   				Node n_IngrID = nl_IngrID.item(index5);
+				            			   				if(n_IngrID.getNodeType() == Node.ELEMENT_NODE) {
+				            			   					Element e_IngrID = (Element) n_IngrID;
+				            			   					if(e_IngrID.getAttribute("idingrediente").equals(e_IngrRef.getAttribute("idingrediente"))) {
+				            			   						result += "Ingredientes: "+e_IngrID.getElementsByTagName(ling).item(0).getTextContent();
+				            			   					}
+				            			   				}
+				            			   			}
+				            			   		}
+				            			   	}
+				            		   }
+				            	   }
+		            		   }
+		            		   result += "Preço: "+e_Serve.getAttribute("preço");
+		            		   result += "----------";
+		            	   }
+	            	   }
+		            }
+	        	}
+					
+		} catch (ParserConfigurationException e) {
+			e.printStackTrace();
+		} catch (SAXException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+    	//TODO introduzir new line na string
+    	return result;
+    }
+    
+    
+
+} // end HandleConnectionThread
