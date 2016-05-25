@@ -13,7 +13,7 @@ public class ClientTCP {
     public static void main(String[] args) {
 
         String host = "localhost";  // Máquina onde reside a aplicação servidora
-        int    port = 6000;         // Porto da aplicação servidora
+        int    port = 5025;         // Porto da aplicação servidora
 
         Socket socket     = null;
         BufferedReader is = null;
@@ -39,7 +39,7 @@ public class ClientTCP {
             os.println("Olá mundo!!!");
 
             // Mostrar o que se recebe do socket
-            System.out.println("Recebi -> " + is.readLine()); 
+            System.out.println("Recebi -> \n" + is.readLine()); 
             
         } 
         // ---------------------
