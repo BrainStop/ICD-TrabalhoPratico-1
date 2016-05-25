@@ -31,13 +31,15 @@ public class ServidorTCPConcorrente {
 
             for( ; ; ) {
                 System.out.println("Servidor TCP concorrente aguarda ligacao no porto " + port + "..." );
-
+                
                 // Espera connect do cliente
                 newSock = serverSocket.accept(); 
-
+                            
                 Thread th = new RequestHandler(newSock);
                 th.start();
             }
+            
+            
         } 
         catch (IOException e) {
             System.err.println("Excepção no servidor: " + e);

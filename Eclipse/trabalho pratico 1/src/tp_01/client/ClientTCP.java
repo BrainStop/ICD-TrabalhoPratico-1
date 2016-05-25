@@ -6,14 +6,18 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
 import java.net.UnknownHostException;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Scanner;
+import java.io.*;
 
 
 public class ClientTCP {
 
     public static void main(String[] args) {
-
+    	
         String host = "localhost";  // Máquina onde reside a aplicação servidora
-        int    port = 6000;         // Porto da aplicação servidora
+        int    port = 5025;         // Porto da aplicação servidora
 
         Socket socket     = null;
         BufferedReader is = null;
@@ -21,7 +25,7 @@ public class ClientTCP {
 
         try {
             socket = new Socket(host, port);
-
+            
             // Mostrar os parametros da ligação
             System.out.println("Ligação: " + socket);
             System.out.println("Endereço do Servidor: "
@@ -35,9 +39,25 @@ public class ClientTCP {
             // Stream para leitura do socket
             is = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 
-            // Escreve no socket
-            os.println("Olá mundo!!!");
+            //Escolha da linguagem por parte do cliente
+            Scanner sc = new Scanner(System.in);
+            //criaçao de uma lista com as linguas disponiveis
+            final List<String> linguas =  Arrays.asList("pt-pt", "en-uk", "fr-fr");
+            String linguagem = null;
 
+            do{
+            	//enquanto a resposta não corresponder a uma linguagem está sempre a perguntar
+                System.out.println("Escolha a linguagem da ementa (pt-pt / en-uk / fr-fr): ");
+                linguagem = sc.nextLine();
+                if(!linguas.contains(linguagem)){
+                	System.out.println("Linguagem não reconhecida!");
+                }
+            }while(!linguas.contains(linguagem));
+            
+
+            // Escreve no socket            
+            os.println("Linguagem escolhida: " + linguagem);
+            
             // Mostrar o que se recebe do socket
             System.out.println("Recebi -> " + is.readLine()); 
             

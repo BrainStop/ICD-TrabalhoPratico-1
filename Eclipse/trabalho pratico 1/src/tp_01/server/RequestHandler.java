@@ -20,7 +20,6 @@ class RequestHandler extends Thread {
         this.connection = connection;
     }
 
-
     public void run() {
 
         BufferedReader is = null;
@@ -61,7 +60,7 @@ class RequestHandler extends Thread {
 	    	
 	    	//Get XML dataBase
     		//TODO Make relative path
-	    	File xmlFile = new File("D:/LEIM/4º Semestre/ICD/Eclipse/trabalho pratico 1/bin/tp_01/database/restaurante.xml");
+	    	File xmlFile = new File("C:/Users/Win 10 Pro/Documents/GitHub/ICD-TrabalhoPratico-1/Eclipse/trabalho pratico 1/src/tp_01/database/restaurante.xml");
 	    	//Create document builder
 	    	//TODO Validate xsd
 	        DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();

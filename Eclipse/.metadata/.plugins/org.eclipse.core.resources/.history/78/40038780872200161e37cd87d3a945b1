@@ -1,0 +1,105 @@
+package tp_01.client;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.PrintWriter;
+import java.net.Socket;
+import java.net.UnknownHostException;
+import java.util.Scanner;
+import java.io.*;
+
+
+public class ClientTCP {
+
+    public static void main(String[] args) {
+    	
+        String host = "localhost";  // Máquina onde reside a aplicação servidora
+        int    port = 5025;         // Porto da aplicação servidora
+
+        Socket socket     = null;
+        BufferedReader is = null;
+        PrintWriter    os = null;
+
+        try {
+            socket = new Socket(host, port);
+            
+            Scanner sc = new Scanner(System.in);
+
+
+            // Mostrar os parametros da ligação
+            System.out.println("Ligação: " + socket);
+            System.out.println("Endereço do Servidor: "
+                    + socket.getInetAddress() + " Porto: " + socket.getPort());
+            System.out.println("Endereço Local: " + socket.getLocalAddress()
+                    + " Porto: " + socket.getLocalPort());
+
+            // Stream para escrita no socket
+            os = new PrintWriter(socket.getOutputStream(), true); 
+
+            // Stream para leitura do socket
+            is = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+
+            //Escolha da linguagem por parte do cliente
+            String pt = "pt-pt";
+            String en = "en-uk";
+            String fr = "fr-fr";
+            
+            System.out.println("Escolha uma lingua para a ementa (pt-pt / en-uk / fr-fr): ");
+            String resposta = sc.nextLine();
+            do{
+            	//System.out.println("A lingua escolhida foi: " + resposta);
+                System.out.println("Linguas disponiveis: pt-pt / en-uk / fr-fr");
+            	System.out.println("Lingua nao reconhecida, por favor escolha uma das tres possiveis:");
+            	resposta = sc.nextLine();
+            }while (!resposta.equals(pt) || !resposta.equals(en) || !resposta.equals(fr))
+            	
+            
+            
+            // Escreve no socket
+            os.println("Olá mundo!!!");
+
+            // Mostrar o que se recebe do socket
+            //System.out.println("Recebi -> " + is.readLine()); 
+            
+        } 
+        // ---------------------
+        //   Socket Exceptions
+        // ---------------------
+        // A maioria dos métodos da class Socket reportam anomalias através das 
+        // excepções IOException ou a sub classe java.net.SocketException. 
+        // No entanto, existem outras excepções, que extendem destas classes, 
+        // que permitem determinar com maior precisão a causa dos problemas.
+        // O conjunto de classes de excepções originadas pelos métodos socks são:
+        //
+        //      public class SocketException extends IOException
+        //
+        //      public class BindException extends SocketException
+        //
+        //      public class ConnectException extends SocketException
+        //
+        //      public class NoRouteToHostException extends SocketException
+        //
+        //      public class UnknownHostException extends IOException
+        //
+        //      public class ProtocolException extends IOException
+        //
+        catch (UnknownHostException e) { 
+            System.err.println("Máquina " + host + " desconhecida: " + e.getMessage());
+        } 
+        catch (IOException e) {
+            System.err.println("Erro na ligação: " + e.getMessage());
+        }
+        finally {
+            // No fim de tudo, fechar os streams e o socket
+            try {
+              if (os != null) os.close();
+              if (is != null) is.close();
+              if (socket != null ) socket.close();
+            }
+            catch (IOException e) { 
+                // if an I/O error occurs when closing this socket
+            }
+        } // end finally
+    } // end main
+}
