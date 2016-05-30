@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="ISO-8859-1" standalone="no"?>
+<?xml-stylesheet type="text/xsl" href=""?>
+<cliente tipo="">
+	<ementa>
+		<linguagem>pt-pt</linguagem>
+	</ementa>
+	<pedido>
+		<iditem>iditems</iditem>
+	</pedido>
+	<estado-pedido>
+		<idestado></idestado>
+	</estado-pedido>
+</cliente>
